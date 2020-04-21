@@ -31,11 +31,14 @@ public class FilterApiListingResource extends BaseApiListingResource {
 	@GET
 	@Produces({ "application/json", "application/yaml" })
 	// @ApiOperation(value = "The swagger definition in either JSON or YAML", hidden = true)
-	public Response getListing(@Context Application app,
-		@Context HttpHeaders headers,
-		@Context UriInfo uriInfo, @PathParam("type") String type) {
+	public Response getListing(@Context Application app, @Context HttpHeaders headers, @Context UriInfo uriInfo,
+		@PathParam("type") String type) {
 		return StringUtils.isNotBlank(type) && type.trim().equalsIgnoreCase("yaml")
 			? this.getListingYamlResponse(app, context, null, headers, uriInfo)
 			: this.getListingJsonResponse(app, context, null, headers, uriInfo);
 	}
 }
+
+//public class FilterApiListingResource {
+//
+//}

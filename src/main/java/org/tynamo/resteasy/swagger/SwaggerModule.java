@@ -12,6 +12,7 @@ import org.apache.tapestry5.ioc.services.ApplicationDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.BaseURLSource;
+import org.apache.tapestry5.services.ClasspathAssetAliasManager;
 import org.tynamo.resteasy.ResteasyModule;
 import org.tynamo.resteasy.ResteasySymbols;
 
@@ -22,8 +23,10 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
 import io.swagger.jaxrs.config.BeanConfig;
-import io.swagger.jaxrs.listing.AcceptHeaderApiListingResource;
+//import io.swagger.jaxrs.listing.AcceptHeaderApiListingResource;
 import io.swagger.v3.jaxrs2.SwaggerSerializers;
+import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
+import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 
 @ImportModule(ResteasyModule.class)
 public class SwaggerModule
@@ -41,8 +44,9 @@ public class SwaggerModule
 	{
 		// singletons.addInstance(ApiListingResource.class);
 		singletons.addInstance(FilterApiListingResource.class);
+		singletons.addInstance(OpenApiResource.class);
 		singletons.addInstance(SwaggerSerializers.class);
-		singletons.addInstance(AcceptHeaderApiListingResource.class);
+		// singletons.addInstance(AcceptHeaderOpenApiResource.class);
 	}
 
 	@Contribute(javax.ws.rs.core.Application.class)
@@ -66,32 +70,49 @@ public class SwaggerModule
 
 	@Startup
 	public static void swagger(javax.ws.rs.core.Application application, BaseURLSource baseURLSource,
+		ApplicationGlobals applicationGlobals,
 		@Symbol(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM) String basePackage,
 		@Symbol(ResteasySymbols.MAPPING_PREFIX) String restPath,
-		@Symbol(SymbolConstants.APPLICATION_VERSION) String version)
+		@Symbol(SymbolConstants.APPLICATION_VERSION) String version) throws OpenApiConfigurationException
 	{
 		application.getSingletons(); // EAGER LOADING!!
 
 		BeanConfig config = new BeanConfig();
-		config.setResourcePackage(basePackage);
+		// config.setResourcePackage(basePackage);
+		config.setResourcePackage("org.tynamo.resteasy");
 		config.setVersion(version);
 		// config.setBasePath("http://localhost:8080" + restPath);
 		config.setBasePath(restPath);
 		// config.setBasePath(baseURLSource.getBaseURL(false) + restPath);
-		config.setTitle("Tapestry5-RESTEasy-Swagger Sample");
+		config.setTitle(applicationGlobals.getServletContext().getServletContextName());
 		/*
 		 * config.setDescription(""); config.setContact(""); config.setLicense("Apache 2.0 License");
 		 * config.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
 		 */
 		config.setScan(true);
+
 		// kaosko 2020-04-20, doesn't seem this is required anymore? (for 1.5.x and up)
 		// config.set set setApiReader(DefaultJaxrsApiReader.class.getCanonicalName()); // Add the reader, which scans the resources and
 		// extracts the resource information
 
 		// with 2.0.0-rc2 version, this doesn't seem to be required either
 		// ScannerFactory.setScanner(config);
+
+		// OpenAPI oas = new OpenAPI();
+		// Info info = new Info().title("Tapestry5-RESTEasy-Swagger Sample").description("")
+		// // .termsOfService("http://swagger.io/terms/").contact(new Contact().email("apiteam@swagger.io"))
+		// .license(new License().name("Apache 2.0").url("http://www.apache.org/licenses/LICENSE-2.0.html"));
+		//
+		// oas.info(info);
+		// // SwaggerConfiguration oasConfig = new SwaggerConfiguration().openAPI(oas).prettyPrint(true)
+		// // .resourcePackages(Stream.of(basePackage).collect(Collectors.toSet()));
+		// SwaggerConfiguration oasConfig = new SwaggerConfiguration().openAPI(oas).prettyPrint(true)
+		// .resourcePackages(Stream.of("org.tynamo.resteasy").collect(Collectors.toSet()));
+		//
+		// new JaxrsOpenApiContextBuilder().application(application).openApiConfiguration(oasConfig).buildContext(true);
 	}
 
+	@Contribute(ClasspathAssetAliasManager.class)
 	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
 		configuration.add("swagger-ui", "swagger/ui");
 	}

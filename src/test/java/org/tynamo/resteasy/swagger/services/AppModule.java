@@ -13,6 +13,8 @@ import org.tynamo.resteasy.ResteasyModule;
 import org.tynamo.resteasy.ResteasyPackageManager;
 import org.tynamo.resteasy.ResteasySymbols;
 import org.tynamo.resteasy.swagger.SwaggerModule;
+import org.tynamo.resteasy.ws.ReloadableEchoResource;
+import org.tynamo.resteasy.ws.ReloadableEchoResourceImpl;
 
 @ImportModule({ ResteasyModule.class, SwaggerModule.class })
 public class AppModule
@@ -20,6 +22,7 @@ public class AppModule
 
 	public static void bind(ServiceBinder binder)
 	{
+		binder.bind(ReloadableEchoResource.class, ReloadableEchoResourceImpl.class);
 	}
 
 
@@ -29,11 +32,10 @@ public class AppModule
 	 *
 	 */
 	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons
-	// ,ReloadableEchoResource reloadableEchoResource
-	)
+	public static void contributeApplication(Configuration<Object> singletons,
+		ReloadableEchoResource reloadableEchoResource)
 	{
-		// singletons.add(reloadableEchoResource);
+		singletons.add(reloadableEchoResource);
 	}
 
 	@Contribute(SymbolProvider.class)
@@ -49,7 +51,7 @@ public class AppModule
 	@Contribute(ResteasyPackageManager.class)
 	public static void resteasyPackageManager(Configuration<String> configuration)
 	{
-		// configuration.add("org.tynamo.resteasy.ws.autobuild");
+		configuration.add("org.tynamo.resteasy.ws.autobuild");
 	}
 
 }
