@@ -7,7 +7,7 @@
 
 	<context-param>
 		<param-name>tapestry.app-package</param-name>
-		<param-value>org.tynamo.resteasy.swagger</param-value>
+		<param-value>org.tynamo.resteasy</param-value>
 	</context-param>
 
 	<filter>

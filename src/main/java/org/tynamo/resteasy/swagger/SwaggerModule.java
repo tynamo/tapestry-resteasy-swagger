@@ -1,5 +1,8 @@
 package org.tynamo.resteasy.swagger;
 
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.tapestry5.SymbolConstants;
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.ioc.Configuration;
@@ -12,7 +15,6 @@ import org.apache.tapestry5.ioc.services.ApplicationDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.apache.tapestry5.services.ApplicationGlobals;
 import org.apache.tapestry5.services.BaseURLSource;
-import org.apache.tapestry5.services.ClasspathAssetAliasManager;
 import org.tynamo.resteasy.ResteasyModule;
 import org.tynamo.resteasy.ResteasySymbols;
 
@@ -22,11 +24,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 
-import io.swagger.jaxrs.config.BeanConfig;
 //import io.swagger.jaxrs.listing.AcceptHeaderApiListingResource;
 import io.swagger.v3.jaxrs2.SwaggerSerializers;
+import io.swagger.v3.jaxrs2.integration.JaxrsOpenApiContextBuilder;
+import io.swagger.v3.jaxrs2.integration.resources.AcceptHeaderOpenApiResource;
 import io.swagger.v3.jaxrs2.integration.resources.OpenApiResource;
 import io.swagger.v3.oas.integration.OpenApiConfigurationException;
+import io.swagger.v3.oas.integration.SwaggerConfiguration;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 
 @ImportModule(ResteasyModule.class)
 public class SwaggerModule
@@ -42,11 +48,9 @@ public class SwaggerModule
 	@Contribute(javax.ws.rs.core.Application.class)
 	public static void contributeApplication(Configuration<Object> singletons, ApplicationGlobals globals)
 	{
-		// singletons.addInstance(ApiListingResource.class);
-		singletons.addInstance(FilterApiListingResource.class);
-		singletons.addInstance(OpenApiResource.class);
 		singletons.addInstance(SwaggerSerializers.class);
-		// singletons.addInstance(AcceptHeaderOpenApiResource.class);
+		singletons.addInstance(OpenApiResource.class);
+		singletons.addInstance(AcceptHeaderOpenApiResource.class);
 	}
 
 	@Contribute(javax.ws.rs.core.Application.class)
@@ -68,6 +72,7 @@ public class SwaggerModule
 		singletons.add(jacksonJsonProvider);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Startup
 	public static void swagger(javax.ws.rs.core.Application application, BaseURLSource baseURLSource,
 		ApplicationGlobals applicationGlobals,
@@ -77,44 +82,20 @@ public class SwaggerModule
 	{
 		application.getSingletons(); // EAGER LOADING!!
 
-		BeanConfig config = new BeanConfig();
-		// config.setResourcePackage(basePackage);
-		config.setResourcePackage("org.tynamo.resteasy");
-		config.setVersion(version);
-		// config.setBasePath("http://localhost:8080" + restPath);
-		config.setBasePath(restPath);
-		// config.setBasePath(baseURLSource.getBaseURL(false) + restPath);
-		config.setTitle(applicationGlobals.getServletContext().getServletContextName());
-		/*
-		 * config.setDescription(""); config.setContact(""); config.setLicense("Apache 2.0 License");
-		 * config.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
-		 */
-		config.setScan(true);
+		OpenAPI openAPI = new OpenAPI();
+		Info info = new Info().title(applicationGlobals.getServletContext().getServletContextName());
+		openAPI.info(info);
+		SwaggerConfiguration oasConfig = new SwaggerConfiguration().openAPI(openAPI).prettyPrint(true)
+			.resourcePackages(Stream.of(basePackage).collect(Collectors.toSet()));
 
-		// kaosko 2020-04-20, doesn't seem this is required anymore? (for 1.5.x and up)
-		// config.set set setApiReader(DefaultJaxrsApiReader.class.getCanonicalName()); // Add the reader, which scans the resources and
-		// extracts the resource information
-
-		// with 2.0.0-rc2 version, this doesn't seem to be required either
-		// ScannerFactory.setScanner(config);
-
-		// OpenAPI oas = new OpenAPI();
-		// Info info = new Info().title("Tapestry5-RESTEasy-Swagger Sample").description("")
-		// // .termsOfService("http://swagger.io/terms/").contact(new Contact().email("apiteam@swagger.io"))
-		// .license(new License().name("Apache 2.0").url("http://www.apache.org/licenses/LICENSE-2.0.html"));
-		//
-		// oas.info(info);
-		// // SwaggerConfiguration oasConfig = new SwaggerConfiguration().openAPI(oas).prettyPrint(true)
-		// // .resourcePackages(Stream.of(basePackage).collect(Collectors.toSet()));
-		// SwaggerConfiguration oasConfig = new SwaggerConfiguration().openAPI(oas).prettyPrint(true)
-		// .resourcePackages(Stream.of("org.tynamo.resteasy").collect(Collectors.toSet()));
-		//
-		// new JaxrsOpenApiContextBuilder().application(application).openApiConfiguration(oasConfig).buildContext(true);
+		// note the last read() is meant to read a configuration file if any exist, see
+		// https://github.com/swagger-api/swagger-core/wiki/Swagger-2.X---Integration-and-configuration#jax-rs-application
+		new JaxrsOpenApiContextBuilder().application(application).openApiConfiguration(oasConfig).buildContext(true).read();
 	}
 
-	@Contribute(ClasspathAssetAliasManager.class)
-	public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
-		configuration.add("swagger-ui", "swagger/ui");
-	}
+	// @Contribute(ClasspathAssetAliasManager.class)
+	// public static void contributeClasspathAssetAliasManager(MappedConfiguration<String, String> configuration) {
+	// configuration.add("swagger-ui", "swagger/ui");
+	// }
 
 }

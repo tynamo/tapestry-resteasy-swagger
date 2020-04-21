@@ -1,4 +1,4 @@
-package org.tynamo.resteasy.swagger.services;
+package org.tynamo.resteasy.services;
 
 import org.apache.tapestry5.internal.InternalConstants;
 import org.apache.tapestry5.internal.InternalSymbols;
