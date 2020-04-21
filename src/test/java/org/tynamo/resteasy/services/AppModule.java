@@ -25,7 +25,6 @@ public class AppModule
 		binder.bind(ReloadableEchoResource.class, ReloadableEchoResourceImpl.class);
 	}
 
-
 	/**
 	 * Contributions to the RESTeasy main Application, insert all your RESTeasy singleton services here.
 	 * <p/>

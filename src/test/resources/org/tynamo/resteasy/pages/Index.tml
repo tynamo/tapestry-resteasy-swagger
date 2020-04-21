@@ -1,0 +1,15 @@
+
+<html title="swagger integration"
+	xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+	xmlns:p="tapestry:parameter">
+<head></head>
+<body>
+	<t:alerts />
+	<h1>Try out OpenAPI v3 integration links</h1>
+	<ul>
+		<li><a href="/mycustomresteasyprefix/openapi.json">/openapi.json</a></li>
+		<li><a href="/mycustomresteasyprefix/openapi.yaml">/openapi.yaml</a></li>
+		<li><a href="/webjars/swagger-ui/3.25.0?url=/mycustomresteasyprefix/openapi.json">/swagger-ui</a></li>
+	</ul>
+</body>
+</html>
