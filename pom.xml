@@ -28,7 +28,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Tapestry-Module-Classes>org.tynamo.resteasy.swagger.ResteasySwaggerModule</Tapestry-Module-Classes>
+							<Tapestry-Module-Classes>org.tynamo.resteasy.swagger.SwaggerModule</Tapestry-Module-Classes>
 						</manifestEntries>
 					</archive>
 				</configuration>
