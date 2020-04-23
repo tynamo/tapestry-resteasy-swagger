@@ -33,6 +33,7 @@ import io.swagger.v3.oas.integration.OpenApiConfigurationException;
 import io.swagger.v3.oas.integration.SwaggerConfiguration;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
 
 @ImportModule(ResteasyModule.class)
 public class SwaggerModule
@@ -85,6 +86,9 @@ public class SwaggerModule
 		OpenAPI openAPI = new OpenAPI();
 		Info info = new Info().title(applicationGlobals.getServletContext().getServletContextName());
 		openAPI.info(info);
+		Server server = new Server();
+		server.setUrl(restPath);
+		openAPI.servers(Stream.of(server).collect(Collectors.toList()));
 		SwaggerConfiguration oasConfig = new SwaggerConfiguration().openAPI(openAPI).prettyPrint(true)
 			.resourcePackages(Stream.of(basePackage).collect(Collectors.toSet()));
 
