@@ -4,7 +4,7 @@
 	<artifactId>tapestry-resteasy-swagger</artifactId>
 	<name>Tapestry RESTEasy swagger integration</name>
 	<packaging>jar</packaging>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<description>Swagger + UI for tapestry-resteasy</description>
 
 	<parent>
@@ -17,7 +17,7 @@
 		<connection>scm:git:git@github.com:tynamo/tapestry-resteasy-swagger.git</connection>
 		<developerConnection>scm:git:git@github.com:tynamo/tapestry-resteasy-swagger.git</developerConnection>
 		<url>https://github.com/tynamo/tapestry-resteasy</url>
-	  <tag>HEAD</tag>
+	  <tag>tapestry-resteasy-swagger-0.0.2</tag>
   </scm>
 
 	<build>
