@@ -1,9 +1,9 @@
 package org.tynamo.resteasy.services;
 
-import org.apache.tapestry5.internal.InternalConstants;
-import org.apache.tapestry5.internal.InternalSymbols;
-import org.apache.tapestry5.ioc.Configuration;
-import org.apache.tapestry5.ioc.MappedConfiguration;
+import org.apache.tapestry5.commons.Configuration;
+import org.apache.tapestry5.commons.MappedConfiguration;
+import org.apache.tapestry5.http.internal.TapestryHttpInternalConstants;
+import org.apache.tapestry5.http.internal.TapestryHttpInternalSymbols;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.ImportModule;
@@ -43,8 +43,8 @@ public class AppModule
 	{
 		// note that we want to
 		configuration.add(ResteasySymbols.MAPPING_PREFIX, "/mycustomresteasyprefix");
-		configuration.add(InternalConstants.TAPESTRY_APP_PACKAGE_PARAM, "org.tynamo.resteasy");
-		configuration.add(InternalSymbols.APP_PACKAGE_PATH, "org/tynamo/resteasy");
+		configuration.add(TapestryHttpInternalConstants.TAPESTRY_APP_PACKAGE_PARAM, "org.tynamo.resteasy");
+		configuration.add(TapestryHttpInternalSymbols.APP_PACKAGE_PATH, "org/tynamo/resteasy");
 	}
 
 	@Contribute(ResteasyPackageManager.class)

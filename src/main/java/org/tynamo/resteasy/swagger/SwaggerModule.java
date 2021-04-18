@@ -4,17 +4,17 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.tapestry5.SymbolConstants;
+import org.apache.tapestry5.commons.Configuration;
+import org.apache.tapestry5.commons.MappedConfiguration;
+import org.apache.tapestry5.http.services.ApplicationGlobals;
+import org.apache.tapestry5.http.services.BaseURLSource;
 import org.apache.tapestry5.internal.InternalConstants;
-import org.apache.tapestry5.ioc.Configuration;
-import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.annotations.Contribute;
 import org.apache.tapestry5.ioc.annotations.ImportModule;
 import org.apache.tapestry5.ioc.annotations.Startup;
 import org.apache.tapestry5.ioc.annotations.Symbol;
 import org.apache.tapestry5.ioc.services.ApplicationDefaults;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
-import org.apache.tapestry5.services.ApplicationGlobals;
-import org.apache.tapestry5.services.BaseURLSource;
 import org.tynamo.resteasy.ResteasyModule;
 import org.tynamo.resteasy.ResteasySymbols;
 
